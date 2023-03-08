@@ -12,7 +12,7 @@ using SPV.Utils;
 namespace SPV.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20230308202238_CreateInitial")]
+    [Migration("20230308213147_CreateInitial")]
     partial class CreateInitial
     {
         /// <inheritdoc />
@@ -43,7 +43,39 @@ namespace SPV.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Food");
+                    b.ToTable("Foods");
+                });
+
+            modelBuilder.Entity("SPV.Models.Restaurant", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<double>("ClosingTime")
+                        .HasColumnType("float");
+
+                    b.Property<string>("FoodList")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<double>("OpeningTime")
+                        .HasColumnType("float");
+
+                    b.Property<double>("X_coordinate")
+                        .HasColumnType("float");
+
+                    b.Property<double>("Y_coordinate")
+                        .HasColumnType("float");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Restaurants");
                 });
 
             modelBuilder.Entity("SPV.Models.Session", b =>

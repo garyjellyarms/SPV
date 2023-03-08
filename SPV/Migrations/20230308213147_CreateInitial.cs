@@ -12,7 +12,7 @@ namespace SPV.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Food",
+                name: "Foods",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -22,7 +22,25 @@ namespace SPV.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Food", x => x.Id);
+                    table.PrimaryKey("PK_Foods", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Restaurants",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    X_coordinate = table.Column<double>(type: "float", nullable: false),
+                    Y_coordinate = table.Column<double>(type: "float", nullable: false),
+                    OpeningTime = table.Column<double>(type: "float", nullable: false),
+                    ClosingTime = table.Column<double>(type: "float", nullable: false),
+                    FoodList = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Restaurants", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -63,7 +81,10 @@ namespace SPV.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Food");
+                name: "Foods");
+
+            migrationBuilder.DropTable(
+                name: "Restaurants");
 
             migrationBuilder.DropTable(
                 name: "Sessions");

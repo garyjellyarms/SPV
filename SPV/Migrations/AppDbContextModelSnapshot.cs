@@ -40,7 +40,39 @@ namespace SPV.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Food");
+                    b.ToTable("Foods");
+                });
+
+            modelBuilder.Entity("SPV.Models.Restaurant", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<double>("ClosingTime")
+                        .HasColumnType("float");
+
+                    b.Property<string>("FoodList")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<double>("OpeningTime")
+                        .HasColumnType("float");
+
+                    b.Property<double>("X_coordinate")
+                        .HasColumnType("float");
+
+                    b.Property<double>("Y_coordinate")
+                        .HasColumnType("float");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Restaurants");
                 });
 
             modelBuilder.Entity("SPV.Models.Session", b =>

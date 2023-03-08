@@ -12,7 +12,7 @@ namespace SPV.Utils
         }
         public DbSet<User> User { get; set; }
         public DbSet<Session> Sessions { get; set; }
-        public DbSet<Food> Restaurants { get; set; }
+        public DbSet<Restaurant> Restaurants { get; set; }
         public DbSet<Food> Foods { get; set; }
     }
 }

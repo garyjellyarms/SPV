@@ -8,8 +8,6 @@ namespace SPV.Models
         public int UserID { get; set; }
         public DateTime DateTo { get; set; }
         public Session()
-        {
-
-        }
+        {}
     }
 }

@@ -1,0 +1,7 @@
+# BUILD
+docker build -t spv-api:1 .
+
+# RUN
+docker stop spv-api
+docker rm spv-api
+docker run -d --name spv-api -p 81:80 -e ASPNETCORE_ENVIRONMENT=Development spv-api:1

@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using SVP_BackEnd.Models;
+using SPV.Models;
 
-namespace SVP_BackEnd.Controllers
+namespace SPV.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]

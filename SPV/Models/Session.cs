@@ -1,11 +1,15 @@
 ﻿using System.ComponentModel;
 
-namespace SVP_BackEnd.Models
+namespace SPV.Models
 {
     public class Session
     {
-        public int UserID{ get; set; }
-        public DateTime DateTo{ get; set; }
+        public int Id { get; set; }
+        public int UserID { get; set; }
+        public DateTime DateTo { get; set; }
+        public Session()
+        {
 
+        }
     }
 }

@@ -23,11 +23,12 @@ namespace SPV.Controllers
             if (userDb == null || userInfo.Password == null) { return new Session { DateTo = DateTime.MinValue, Id = -1, UserID = -1 }; }
             if (!passwordManagement.VerifyPassword(userInfo.Password, userDb))
             {
-                return new Session { DateTo = DateTime.MinValue, Id=-1, UserID=-1 };
+                return new Session { DateTo = DateTime.MinValue, Id = -1, UserID = -1 };
             }
             var savedSession = db.Sessions.Add(new Session { DateTo = DateTime.Now.AddHours(4.0), UserID = userDb.Id });
             db.SaveChanges();
-            return savedSession;
+            
+            return savedSession.Entity;
         }
 
         [HttpPost(Name = "Register")]

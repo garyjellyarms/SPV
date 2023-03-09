@@ -37,3 +37,16 @@ Click properties
 
 
 here you will see your default sql server instance
+
+Inside Package manager console use : 
+
+dotnet tool install --global dotnet-ef --version 6.*
+
+dotnet ef migrations add secondarymigration
+
+dotnet ef database update
+
+In this order so you can deploy the db
+
+The Database can be found at Sql server explorer under localdb/database/master/tables
+

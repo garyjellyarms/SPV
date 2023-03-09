@@ -1,11 +1,15 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.Collections.Generic;
 
-namespace SVP_BackEnd.Models
+namespace SPV.Models;
+
+public partial class Session
 {
-    public class Session
-    {
-        public int UserID{ get; set; }
-        public DateTime DateTo{ get; set; }
+    public int IdSession { get; set; }
 
-    }
+    public int FkUporabnika { get; set; }
+
+    public DateTime? DateTo { get; set; }
+
+    public virtual User FkUporabnikaNavigation { get; set; } = null!;
 }

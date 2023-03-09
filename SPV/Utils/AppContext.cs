@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
-using SVP_BackEnd.Models;
+using SPV.Models;
 namespace SVP_BackEnd.Utils
 {
     public class AppContext : DbContext

@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SPV.Utils;
 using SPV.Models;
@@ -6,7 +6,9 @@ using Microsoft.AspNetCore.Razor.TagHelpers;
 
 namespace SPV.Controllers
 {
-    public class ResturantController : Controller
+    [Route("api/[controller]")]
+    [ApiController]
+    public class ResturantController : ControllerBase
     {
         private readonly AppDbContext db;
 

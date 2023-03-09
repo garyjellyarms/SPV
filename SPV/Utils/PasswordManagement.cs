@@ -20,7 +20,7 @@ namespace SPV.Utils
         }
         public bool VerifyPassword(string password, User user)
         {
-            if(user.Salt== null || user.Password == null) { return false; }
+            if(user.Salt == null || user.Password == null) { return false; }
             var hashToCompare = Rfc2898DeriveBytes.Pbkdf2(password, Convert.FromHexString(user.Salt), iterations, hashAlgorithm, keySize);
             return hashToCompare.SequenceEqual(Convert.FromHexString(user.Password));
         }

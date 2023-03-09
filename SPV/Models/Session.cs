@@ -7,6 +7,7 @@ namespace SPV.Models
         public int Id { get; set; }
         public int UserID { get; set; }
         public DateTime DateTo { get; set; }
+        public string Error{ get; set; }
         public Session()
         {}
     }

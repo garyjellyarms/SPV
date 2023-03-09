@@ -1,83 +1,87 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using SPV.Utils;
+using SPV.Models;
+using Microsoft.AspNetCore.Razor.TagHelpers;
 
 namespace SPV.Controllers
 {
     public class ResturantController : Controller
     {
-        // GET: ResturantController
-        public ActionResult Index()
+        private readonly AppDbContext db;
+
+        public ResturantController(AppDbContext db)
         {
-            return View();
+            this.db = db;
         }
 
-        // GET: ResturantController/Details/5
-        public ActionResult Details(int id)
+        // GET: api/<ResturantController>
+        [HttpGet]
+        public IEnumerable<Restaurant>? Get()
         {
-            return View();
+            var restaurants = db.Restaurants.ToList();
+
+            if (restaurants == null || restaurants.Count < 1) return null;
+
+            return restaurants;
         }
 
-        // GET: ResturantController/Create
-        public ActionResult Create()
+        // GET: api/<RestaurantController>/5
+        [HttpGet("{id}")]
+        public Restaurant? Get(int id)
         {
-            return View();
+            Restaurant? restaurant = db.Restaurants.FirstOrDefault(x => x.Id == id);
+
+            if(restaurant == null) return null;
+
+            return restaurant;
         }
 
-        // POST: ResturantController/Create
+        // POST api/<RestaurantController>
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
+        public Restaurant? Post([FromBody] Restaurant newRestaurant)
         {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
+            if(newRestaurant == null || newRestaurant.Id < 0) return null;
+
+            var returnRestaurant = db.Restaurants.Add(newRestaurant);
+            db.SaveChanges();
+
+            return returnRestaurant.Entity;
         }
 
-        // GET: ResturantController/Edit/5
-        public ActionResult Edit(int id)
+        [HttpPut("{id}")]
+        public bool Put(int id, [FromBody] Restaurant changeRestaurant)
         {
-            return View();
+            if(id != changeRestaurant.Id) return false;
+
+            Restaurant? oldRestaurant = db.Restaurants.FirstOrDefault(x => x.Id == id);
+
+            if (oldRestaurant == null) return false;
+
+            oldRestaurant.Name = changeRestaurant.Name;
+            oldRestaurant.X_coordinate = changeRestaurant.X_coordinate;
+            oldRestaurant.Y_coordinate = changeRestaurant.Y_coordinate;
+            oldRestaurant.OpeningTime = changeRestaurant.OpeningTime;
+            oldRestaurant.ClosingTime = changeRestaurant.ClosingTime;
+            oldRestaurant.FoodList = changeRestaurant.FoodList;
+            db.SaveChanges();
+
+            return true;
         }
 
-        // POST: ResturantController/Edit/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        [HttpDelete("{id}")]
+        public Restaurant? Delete(int id)
         {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
+            if(id < 0) return null;
 
-        // GET: ResturantController/Delete/5
-        public ActionResult Delete(int id)
-        {
-            return View();
-        }
+            Restaurant? deletingRestaurant = db.Restaurants.FirstOrDefault(x => x.Id == id);
 
-        // POST: ResturantController/Delete/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
+            if (deletingRestaurant == null) return null;
+
+            var deleted = db.Restaurants.Remove(deletingRestaurant);
+            db.SaveChanges();
+
+            return deleted.Entity;
         }
     }
 }

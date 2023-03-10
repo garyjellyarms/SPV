@@ -1,12 +1,14 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using SPV.Utils;
 using SPV.Models;
+using Microsoft.AspNetCore.Razor.TagHelpers;
 
 namespace SPV.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class AlergenController : Controller
+    public class AlergenController : ControllerBase
     {
         private readonly AppDbContext db;
 

@@ -21,17 +21,17 @@ public partial class SpvContext : DbContext
 
     public virtual DbSet<HranaVsebujeAlergen> HranaVsebujeAlergens { get; set; }
 
+    public virtual DbSet<Ponuja> Ponujas { get; set; }
+
     public virtual DbSet<Restevracija> Restevracijas { get; set; }
 
     public virtual DbSet<Session> Sessions { get; set; }
-
-    public virtual DbSet<TipHrane> TipHranes { get; set; }
 
     public virtual DbSet<User> Users { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseMySQL("Server=20.117.117.129;Database=spv;Uid=test;Pwd={5>Q]E=Ja(9Fd%)-;");
+        => optionsBuilder.UseMySQL("Server=localhost;Database=spv;Uid=root;Pwd=Feri2001;");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -54,30 +54,16 @@ public partial class SpvContext : DbContext
 
             entity.ToTable("hrana");
 
-            entity.HasIndex(e => e.FkRestevravije, "fk_Hrana_Restevracija1_idx");
-
-            entity.HasIndex(e => e.FkTipHrane, "fk_Hrana_Tip_hrane1_idx");
-
             entity.Property(e => e.IdHrane).HasColumnName("Id_hrane");
-            entity.Property(e => e.Cena).HasPrecision(10);
-            entity.Property(e => e.FkRestevravije).HasColumnName("fk_restevravije");
-            entity.Property(e => e.FkTipHrane).HasColumnName("fk_Tip_hrane");
+            entity.Property(e => e.Cena).HasPrecision(5);
             entity.Property(e => e.ImeHrane)
                 .HasMaxLength(100)
                 .HasColumnName("Ime_hrane");
+            entity.Property(e => e.OpisHrane).HasMaxLength(100);
             entity.Property(e => e.SlikaHrane)
                 .HasMaxLength(500)
                 .HasColumnName("Slika_hrane");
-
-            entity.HasOne(d => d.FkRestevravijeNavigation).WithMany(p => p.Hranas)
-                .HasForeignKey(d => d.FkRestevravije)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("fk_Hrana_Restevracija1");
-
-            entity.HasOne(d => d.FkTipHraneNavigation).WithMany(p => p.Hranas)
-                .HasForeignKey(d => d.FkTipHrane)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("fk_Hrana_Tip_hrane1");
+            entity.Property(e => e.TipHrane).HasMaxLength(45);
         });
 
         modelBuilder.Entity<HranaVsebujeAlergen>(entity =>
@@ -103,6 +89,30 @@ public partial class SpvContext : DbContext
                 .HasForeignKey(d => d.FkHrane)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("fk_Hrana_vsebuje_Alergen_Hrana1");
+        });
+
+        modelBuilder.Entity<Ponuja>(entity =>
+        {
+            entity.HasKey(e => e.IdVsebuje).HasName("PRIMARY");
+
+            entity.ToTable("ponuja");
+
+            entity.HasIndex(e => e.FkIdHrane, "fk_Restevracija_has_Hrana_Hrana1_idx");
+
+            entity.HasIndex(e => e.FkIdRestevravije, "fk_Restevracija_has_Hrana_Restevracija1_idx");
+
+            entity.Property(e => e.FkIdHrane).HasColumnName("FK_Id_hrane");
+            entity.Property(e => e.FkIdRestevravije).HasColumnName("FK_id_restevravije");
+
+            entity.HasOne(d => d.FkIdHraneNavigation).WithMany(p => p.Ponujas)
+                .HasForeignKey(d => d.FkIdHrane)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("fk_Restevracija_has_Hrana_Hrana1");
+
+            entity.HasOne(d => d.FkIdRestevravijeNavigation).WithMany(p => p.Ponujas)
+                .HasForeignKey(d => d.FkIdRestevravije)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("fk_Restevracija_has_Hrana_Restevracija1");
         });
 
         modelBuilder.Entity<Restevracija>(entity =>
@@ -141,21 +151,6 @@ public partial class SpvContext : DbContext
                 .HasForeignKey(d => d.FkUporabnika)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("fk_Session_User1");
-        });
-
-        modelBuilder.Entity<TipHrane>(entity =>
-        {
-            entity.HasKey(e => e.IdTipHrane).HasName("PRIMARY");
-
-            entity.ToTable("tip_hrane");
-
-            entity.Property(e => e.IdTipHrane).HasColumnName("id_Tip_hrane");
-            entity.Property(e => e.ImeTipa)
-                .HasMaxLength(70)
-                .HasColumnName("Ime_tipa");
-            entity.Property(e => e.SlikaTipa)
-                .HasMaxLength(500)
-                .HasColumnName("slika_tipa");
         });
 
         modelBuilder.Entity<User>(entity =>

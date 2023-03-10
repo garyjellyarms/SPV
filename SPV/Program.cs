@@ -1,4 +1,4 @@
-using SPV.Models;
+//using SPV.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,14 +23,5 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
-
-
-Alergen a = new Alergen("120","123");
-
-SpvContext context = new SpvContext();
-context.Alergens.Add(a);
-context.SaveChanges();
-
-
 
 app.Run();

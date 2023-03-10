@@ -13,13 +13,11 @@ public partial class Hrana
 
     public decimal? Cena { get; set; }
 
-    public int FkRestevravije { get; set; }
+    public string? TipHrane { get; set; }
 
-    public int FkTipHrane { get; set; }
-
-    public virtual Restevracija FkRestevravijeNavigation { get; set; } = null!;
-
-    public virtual TipHrane FkTipHraneNavigation { get; set; } = null!;
+    public string? OpisHrane { get; set; }
 
     public virtual ICollection<HranaVsebujeAlergen> HranaVsebujeAlergens { get; } = new List<HranaVsebujeAlergen>();
+
+    public virtual ICollection<Ponuja> Ponujas { get; } = new List<Ponuja>();
 }

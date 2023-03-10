@@ -12,15 +12,4 @@ public partial class Alergen
     public string? StAlergena { get; set; }
 
     public virtual ICollection<HranaVsebujeAlergen> HranaVsebujeAlergens { get; } = new List<HranaVsebujeAlergen>();
-
-
-public Alergen (string snov, string StAlergena){
-          
-
-        this.Snov = snov;   
-        this.StAlergena = StAlergena;
-    
-    }
 }
-
-

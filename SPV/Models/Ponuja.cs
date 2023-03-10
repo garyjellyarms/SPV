@@ -5,15 +5,13 @@ namespace SPV.Models;
 
 public partial class Ponuja
 {
-    public int IdPonuja { get; set; }
+    public int IdVsebuje { get; set; }
 
-    public int IdRestevravije { get; set; }
+    public int FkIdRestevravije { get; set; }
 
-    public int IdHrane { get; set; }
+    public int FkIdHrane { get; set; }
 
-    public string? TipHrane { get; set; }
+    public virtual Hrana FkIdHraneNavigation { get; set; } = null!;
 
-    public string? SlikaTipHrane { get; set; }
-
-    public virtual Restevracija IdRestevravijeNavigation { get; set; } = null!;
+    public virtual Restevracija FkIdRestevravijeNavigation { get; set; } = null!;
 }

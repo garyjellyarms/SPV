@@ -2,6 +2,7 @@
 
 namespace SPV.Utils
 {
+    //Cordinates class z uporabo longitude in latitude
     public class Coordinates
     {
         public double Latitude { get; private set; }
@@ -13,13 +14,15 @@ namespace SPV.Utils
             Longitude = longitude;
         }
     }
+    //class za računanje razdalje od uporabnika do restavracije
     public static class CoordinatesDistance
     {
+        // funkcija da lahko poves kazeri unite bos uporablo katero nato klice funkcijo za racunanje
         public static double DistanceTo(this Coordinates baseCoordinates, Coordinates targetCoordinates)
         {
             return DistanceTo(baseCoordinates, targetCoordinates, UnitOfLength.Kilometers);
         }
-
+        // funkcija za racunanje razdallje od uporabnika do restavracije
         public static double DistanceTo(this Coordinates baseCoordinates, Coordinates targetCoordinates, UnitOfLength unitOfLength)
         {
             var baseRad = Math.PI * baseCoordinates.Latitude / 180;
@@ -38,7 +41,7 @@ namespace SPV.Utils
             return unitOfLength.ConvertFromKilometers(dist);
         }
     }
-
+    //class za spreminjanje merske enote
     public class UnitOfLength
     {
         public static UnitOfLength Kilometers = new UnitOfLength(1);

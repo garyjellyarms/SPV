@@ -84,5 +84,66 @@ namespace SPV.Controllers
             
             return deleted.Entity;
         }
+
+        //REST ki vkljucuje alergene
+        //
+        //
+        //vrne vse hrane ki vsebujejo alergen
+        // GET api/<FoodController>/alerg/5
+        [HttpGet("alerg/{id}")]
+        public List<Food>? GetByAlergens(int id)
+        {
+            var ac = new AlergenController(db);
+            List<Food> foods = db.Foods.Where(x => x.Alergens.Contains(ac.Get(id))).ToList<Food>();
+
+            if (foods == null) return null;
+
+            return foods;
+        }
+
+        // doda alergen k hrani
+        // PUT api/<FoodController>/alerg/5
+        [HttpPut("alergAdd/{id}")]
+        public bool PutAlergenInFood(int id,int idAlerg) ///(int id, int idAlerg)
+        {
+            //if (id != changeFood.Id) return false;
+            var ac = new AlergenController(db);
+            Food? oldFood = db.Foods.FirstOrDefault(x => x.Id == id);
+
+            if (oldFood == null) return false;
+
+            Alergen dodan = ac.Get(id);
+            if (!oldFood.Alergens.Contains(dodan))
+            {
+                oldFood.Alergens.Add(ac.Get(id));
+            }
+            else return false;
+            
+            db.SaveChanges();
+
+            return true;
+        }
+
+        // brise alergen iz hrane
+        // PUT api/<FoodController>/alerg/5
+        [HttpPut("alergDel/{id}")]
+        public bool DeleteAlergenInFood(int id, int idAlerg)
+        {
+            var ac = new AlergenController(db);
+            Food? oldFood = db.Foods.FirstOrDefault(x => x.Id == id);
+
+            if (oldFood == null) return false;
+
+            Alergen brisan = ac.Get(id);
+            if (oldFood.Alergens.Contains(brisan))
+            {
+                oldFood.Alergens.Remove(brisan);
+            }
+            else return false;
+
+            db.SaveChanges();
+
+            return true;
+        }
     }
 }

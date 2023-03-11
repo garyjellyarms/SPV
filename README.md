@@ -42,6 +42,8 @@ Inside Package manager console use :
 
 dotnet tool install --global dotnet-ef --version 6.*
 
+cd .\SPV            (make sure that you are in the correct folder)
+
 dotnet ef migrations add secondarymigration
 
 dotnet ef database update

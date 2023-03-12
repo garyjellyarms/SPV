@@ -1,0 +1,113 @@
+####################  delete  ####################
+
+All procedures that delete data require an input of an integer, because they lookup data by the primary key value.
+
+
+drop procedure if exists delete_hrana;
+
+DELIMITER //
+
+create procedure delete_hrana
+(
+	in kljuc int
+)
+begin
+	delete from hrana where Id_hrane = kljuc;
+    
+    delete from hrana_vsebuje_alergen where Hrana_Id_hrane = kljuc;
+end //
+
+DELIMITER ;
+
+####################  insert  ####################
+
+Procedures that insert data have to be called in the following formats (based on C# types):
+
+user (string, string, string, string, string, datetime, string)
+restevracija (string, double, double, datetime, datetime, int)
+alergen (string, string)
+session (datetime, int)
+hrana (string, string, decimal, string, string, string, double, double, datetime, datetime)
+hrana_vsebuje_alergen (int, int)
+
+drop procedure if exists insert_User;
+
+DELIMITER //
+
+create procedure insert_User
+(
+	in Up_ime varchar(45),
+    in Up_geslo varchar(45),
+    in ime varchar(45),
+    in priimek varchar(45),
+    in email varchar(45),
+    in nastanek datetime,
+    in salt varchar(45)
+)
+begin
+	insert into user values(default ,Up_ime, Up_geslo, ime, priimek, email, nastanek, salt, null);
+end //
+
+DELIMITER ;
+
+####################  update  ####################
+
+Procedures for updating data have to be called in the following formats (based on C# types) as tehy require the entire object:
+user (int, string, string, string, string, string, datetime, string, datetime)
+restevracija (int, string, double, double, datetime, datetime, int)
+alergen (int, string, string)
+session (int, datetime, int)
+hrana (int, string, string, decimal, string, string)
+
+drop procedure if exists update_user;
+
+DELIMITER //
+
+create procedure update_user
+(
+	in kljuc int,
+    in Up_ime varchar(45),
+    in Up_geslo varchar(45),
+    in ime varchar(45),
+    in priimek varchar(45),
+    in email varchar(45),
+    in nastanek datetime,
+    in salt varchar(45),
+    in session datetime
+)
+begin
+	update user set 
+    Uporabnisko_ime = Up_ime,
+    Uporabnisko_geslo = Up_geslo,
+    Ime_uporabnika = ime,
+    Priimek_uporabnika = priimek,
+    Email_uporabnika = email,
+    Nastanek_uporabnika = nastanek,
+    Salt_uporabnika = salt,
+    Session_DateTo = session
+    where Id_uporabnika = kljuc;
+end //
+
+DELIMITER ;
+
+####################  lookup  ####################
+
+Procedure za iskanje uporabnikov po specificnem podatku podpirajo samo iskanje po:
+primarnem kljucu	int
+uporabniskem imenu	string
+emailu			string
+
+
+drop procedure if exists name_lookup;
+
+DELIMITER //
+
+create procedure name_lookup
+(
+	in ime varchar(45)
+)
+begin
+	select * from user where Uporabnisko_ime = ime;
+end //
+
+DELIMITER ;

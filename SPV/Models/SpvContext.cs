@@ -31,7 +31,7 @@ public partial class SpvContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseMySQL("Server=localhost;Database=spv;Uid=root;Pwd=Feri2001;");
+        => optionsBuilder.UseMySQL("Server=20.254.65.24;Database=spv;Uid=test;Pwd={5>Q]E=Ja(9Fd%)-;");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -39,7 +39,7 @@ public partial class SpvContext : DbContext
         {
             entity.HasKey(e => e.IdAlergen).HasName("PRIMARY");
 
-            entity.ToTable("alergen");
+            entity.ToTable("Alergen");
 
             entity.Property(e => e.IdAlergen).HasColumnName("idAlergen");
             entity.Property(e => e.Snov).HasMaxLength(100);
@@ -52,10 +52,10 @@ public partial class SpvContext : DbContext
         {
             entity.HasKey(e => e.IdHrane).HasName("PRIMARY");
 
-            entity.ToTable("hrana");
+            entity.ToTable("Hrana");
 
             entity.Property(e => e.IdHrane).HasColumnName("Id_hrane");
-            entity.Property(e => e.Cena).HasPrecision(5);
+            entity.Property(e => e.Cena).HasPrecision(2);
             entity.Property(e => e.ImeHrane)
                 .HasMaxLength(100)
                 .HasColumnName("Ime_hrane");
@@ -70,7 +70,7 @@ public partial class SpvContext : DbContext
         {
             entity.HasKey(e => e.IdHranaVsebujeAlergen).HasName("PRIMARY");
 
-            entity.ToTable("hrana_vsebuje_alergen");
+            entity.ToTable("Hrana_Vsebuje_Alergen");
 
             entity.HasIndex(e => e.FkAlergen, "fk_Hrana_vsebuje_Alergen_Alergen1_idx");
 
@@ -95,7 +95,7 @@ public partial class SpvContext : DbContext
         {
             entity.HasKey(e => e.IdVsebuje).HasName("PRIMARY");
 
-            entity.ToTable("ponuja");
+            entity.ToTable("Ponuja");
 
             entity.HasIndex(e => e.FkIdHrane, "fk_Restevracija_has_Hrana_Hrana1_idx");
 
@@ -119,7 +119,7 @@ public partial class SpvContext : DbContext
         {
             entity.HasKey(e => e.IdRestevravije).HasName("PRIMARY");
 
-            entity.ToTable("restevracija");
+            entity.ToTable("Restevracija");
 
             entity.Property(e => e.IdRestevravije).HasColumnName("id_restevravije");
             entity.Property(e => e.ImeRestevracije)
@@ -139,7 +139,7 @@ public partial class SpvContext : DbContext
         {
             entity.HasKey(e => e.IdSession).HasName("PRIMARY");
 
-            entity.ToTable("session");
+            entity.ToTable("Session");
 
             entity.HasIndex(e => e.FkUporabnika, "fk_Session_User1_idx");
 
@@ -157,7 +157,7 @@ public partial class SpvContext : DbContext
         {
             entity.HasKey(e => e.IdUporabnika).HasName("PRIMARY");
 
-            entity.ToTable("user");
+            entity.ToTable("User");
 
             entity.Property(e => e.IdUporabnika).HasColumnName("Id_uporabnika");
             entity.Property(e => e.EmailUporabnika)

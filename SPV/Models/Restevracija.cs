@@ -17,7 +17,7 @@ public partial class Restevracija
 
     public TimeSpan? OdprtoDo { get; set; }
 
-    public int? Ocena { get; set; }
+    public double? Ocena { get; set; }
 
     public virtual ICollection<Ponuja> Ponujas { get; } = new List<Ponuja>();
 }

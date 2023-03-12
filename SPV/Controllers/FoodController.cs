@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SPV.Utils;
 using SPV.Models;
+using System.Diagnostics.Metrics;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -83,6 +84,118 @@ namespace SPV.Controllers
             db.SaveChanges();
             
             return deleted.Entity;
+        }
+
+        //REST ki vkljucuje alergene
+        //
+        //
+        //vrne vse hrane ki vsebujejo alergen
+        // GET api/<FoodController>/alerg/5
+        [HttpGet("alerg/{id}")]
+        public List<Food>? GetByAlergens(int id)
+        {
+            var ac = new AlergenController(db);
+            List<Food> foods = db.Foods.Where(x => x.Alergens.Contains(ac.Get(id))).ToList<Food>();
+
+            if (foods == null) return null;
+
+            return foods;
+        }
+
+        // doda alergen k hrani
+        // PUT api/<FoodController>/alerg/5
+        [HttpPut("alergAdd/{id}")]
+        public bool PutAlergenInFood(int id,int idAlerg) ///(int id, int idAlerg)
+        {
+            //if (id != changeFood.Id) return false;
+            var ac = new AlergenController(db);
+            Food? oldFood = db.Foods.FirstOrDefault(x => x.Id == id);
+
+            if (oldFood == null) return false;
+
+            Alergen dodan = ac.Get(id);
+            if (!oldFood.Alergens.Contains(dodan))
+            {
+                oldFood.Alergens.Add(ac.Get(id));
+            }
+            else return false;
+            
+            db.SaveChanges();
+
+            return true;
+        }
+
+        // brise alergen iz hrane
+        // PUT api/<FoodController>/alerg/5
+        [HttpPut("alergDel/{id}")]
+        public bool DeleteAlergenInFood(int id, int idAlerg)
+        {
+            var ac = new AlergenController(db);
+            Food? oldFood = db.Foods.FirstOrDefault(x => x.Id == id);
+
+            if (oldFood == null) return false;
+
+            Alergen brisan = ac.Get(id);
+            if (oldFood.Alergens.Contains(brisan))
+            {
+                oldFood.Alergens.Remove(brisan);
+            }
+            else return false;
+
+            db.SaveChanges();
+
+            return true;
+        }
+
+        //To bi blo bolsi pod OrderController samo nismo tak dalec prisli
+        // POST api/<FoodController>/OdstraniSestavine
+        [HttpPost]
+        [Route("OdstraniSestavine")]
+        public Food? Post(int id, [FromBody] string sestavineZaOdstranit)
+        {
+            List<string> templist = new List<string>();
+            string[] words = sestavineZaOdstranit.Split(',');
+
+            foreach (var word in words)
+            {
+                templist.Add(word);
+            }
+
+            var food = db.Foods.FirstOrDefault(x=> x.Id == id);
+            List<string> templist2 = new List<string>();
+            if (food != null)
+            {
+                string[] words2 = food.OpisHrane.Split(',');
+                foreach (var word in words2)
+                {
+                    templist2.Add(word);
+                }
+                foreach (var ingrediant in templist2)
+                {
+                    if (templist.Contains(ingrediant))
+                    {
+                        templist2.Remove(ingrediant);
+                    }
+                }
+                food.OpisHrane = "";
+                if (templist2 != null)
+                {
+
+                    foreach (var ingrediant in templist2)
+                    {
+                        food.OpisHrane += ingrediant + ",";
+                    }
+
+                    food.OpisHrane = food.OpisHrane.Remove(food.OpisHrane.Length - 1, 1);
+                }
+
+                var returnFood = db.Foods.Add(food);
+                db.SaveChanges();
+                return returnFood.Entity;
+            }
+            
+
+            return null;
         }
     }
 }

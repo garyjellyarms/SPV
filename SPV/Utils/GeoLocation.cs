@@ -17,51 +17,45 @@ namespace SPV.Utils
     //class za računanje razdalje od uporabnika do restavracije
     public static class CoordinatesDistance
     {
-        // funkcija da lahko poves kazeri unite bos uporablo katero nato klice funkcijo za racunanje
         public static double DistanceTo(this Coordinates baseCoordinates, Coordinates targetCoordinates)
         {
             return DistanceTo(baseCoordinates, targetCoordinates, UnitOfLength.Kilometers);
         }
-        // funkcija za racunanje razdallje od uporabnika do restavracije
+        // funkcija za racunanje razdalje od uporabnika do restavracije v metrih
         public static double DistanceTo(this Coordinates baseCoordinates, Coordinates targetCoordinates, UnitOfLength unitOfLength)
         {
-            var baseRad = Math.PI * baseCoordinates.Latitude / 180;
-            var targetRad = Math.PI * targetCoordinates.Latitude / 180;
-            var theta = baseCoordinates.Longitude - targetCoordinates.Longitude;
-            var thetaRad = Math.PI * theta / 180;
+            var d1 = baseCoordinates.Latitude * (Math.PI / 180.0);
+            var num1 = baseCoordinates.Longitude * (Math.PI / 180.0);
+            var d2 = targetCoordinates.Latitude * (Math.PI / 180.0);
+            var num2 = targetCoordinates.Longitude * (Math.PI / 180.0) - num1;
+            var d3 = Math.Pow(Math.Sin((d2 - d1) / 2.0), 2.0) + Math.Cos(d1) * Math.Cos(d2) * Math.Pow(Math.Sin(num2 / 2.0), 2.0);
 
-            double dist =
-                Math.Sin(baseRad) * Math.Sin(targetRad) + Math.Cos(baseRad) *
-                Math.Cos(targetRad) * Math.Cos(thetaRad);
-            dist = Math.Acos(dist);
+            var dist = 6376500.0 * (2.0 * Math.Atan2(Math.Sqrt(d3), Math.Sqrt(1.0 - d3)));
 
-            dist = dist * 180 / Math.PI;
-            dist = dist * 60 * 1.1515;
-
-            return unitOfLength.ConvertFromKilometers(dist);
+            return unitOfLength.ConvertFromMeters(dist);
         }
     }
     //class za spreminjanje merske enote
     public class UnitOfLength
     {
-        public static UnitOfLength Kilometers = new UnitOfLength(1);
-        public static UnitOfLength NauticalMiles = new UnitOfLength(0.539956803);
-        public static UnitOfLength Miles = new UnitOfLength(0.621371192);
-        public static UnitOfLength meters = new UnitOfLength(1000);
-        public static UnitOfLength yards = new UnitOfLength(1093.6133);
-        public static UnitOfLength centimeters = new UnitOfLength(100000);
-        public static UnitOfLength feet = new UnitOfLength(3280.8399);
+        public static UnitOfLength Kilometers = new UnitOfLength(0.001);
+        public static UnitOfLength NauticalMiles = new UnitOfLength(0.00053996);
+        public static UnitOfLength Miles = new UnitOfLength(0.0006213);
+        public static UnitOfLength meters = new UnitOfLength(1);
+        public static UnitOfLength yards = new UnitOfLength(1.09361334);
+        public static UnitOfLength centimeters = new UnitOfLength(100);
+        public static UnitOfLength feet = new UnitOfLength(3.2808);
 
-        private readonly double _fromKilometersFactor;
+        private readonly double _fromMetersFactor;
 
-        private UnitOfLength(double fromKilometerFactor)
+        private UnitOfLength(double fromMetersFactor)
         {
-            _fromKilometersFactor = fromKilometerFactor;
+            _fromMetersFactor = fromMetersFactor;
         }
 
-        public double ConvertFromKilometers(double input)
+        public double ConvertFromMeters(double input)
         {
-            return input * _fromKilometersFactor;
+            return input * _fromMetersFactor;
         }
     }
 

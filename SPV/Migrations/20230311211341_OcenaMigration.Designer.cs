@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SPV.Utils;
 
@@ -11,9 +12,11 @@ using SPV.Utils;
 namespace SPV.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230311211341_OcenaMigration")]
+    partial class OcenaMigration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -56,14 +59,7 @@ namespace SPV.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("GroupId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("OpisHrane")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -73,28 +69,7 @@ namespace SPV.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("GroupId");
-
                     b.ToTable("Foods");
-                });
-
-            modelBuilder.Entity("SPV.Models.Group", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("Created")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid>("Guid")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Groups");
                 });
 
             modelBuilder.Entity("SPV.Models.Restaurant", b =>
@@ -170,9 +145,6 @@ namespace SPV.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("GroupId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -194,8 +166,6 @@ namespace SPV.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("GroupId");
-
                     b.ToTable("User");
                 });
 
@@ -208,28 +178,7 @@ namespace SPV.Migrations
 
             modelBuilder.Entity("SPV.Models.Food", b =>
                 {
-                    b.HasOne("SPV.Models.Group", null)
-                        .WithMany("Foods")
-                        .HasForeignKey("GroupId");
-                });
-
-            modelBuilder.Entity("SPV.Models.User", b =>
-                {
-                    b.HasOne("SPV.Models.Group", null)
-                        .WithMany("Users")
-                        .HasForeignKey("GroupId");
-                });
-
-            modelBuilder.Entity("SPV.Models.Food", b =>
-                {
                     b.Navigation("Alergens");
-                });
-
-            modelBuilder.Entity("SPV.Models.Group", b =>
-                {
-                    b.Navigation("Foods");
-
-                    b.Navigation("Users");
                 });
 #pragma warning restore 612, 618
         }

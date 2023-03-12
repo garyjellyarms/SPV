@@ -1,3 +1,5 @@
+#drop database spv;
+
 -- MySQL Workbench Forward Engineering
 
 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
@@ -40,18 +42,8 @@ CREATE TABLE IF NOT EXISTS `spv`.`Restevracija` (
   `Y_kordinata` DOUBLE NULL,
   `Odprto_od` TIME NULL,
   `Odprto_do` TIME NULL,
+  `Ocena` INT NULL,
   PRIMARY KEY (`id_restevravije`))
-ENGINE = InnoDB;
-
-
--- -----------------------------------------------------
--- Table `spv`.`Tip_hrane`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `spv`.`Tip_hrane` (
-  `id_Tip_hrane` INT NOT NULL AUTO_INCREMENT,
-  `Ime_tipa` VARCHAR(70) NULL,
-  `slika_tipa` VARCHAR(500) NULL,
-  PRIMARY KEY (`id_Tip_hrane`))
 ENGINE = InnoDB;
 
 
@@ -62,22 +54,10 @@ CREATE TABLE IF NOT EXISTS `spv`.`Hrana` (
   `Id_hrane` INT NOT NULL AUTO_INCREMENT,
   `Slika_hrane` VARCHAR(500) NULL,
   `Ime_hrane` VARCHAR(100) NULL,
-  `Cena` DECIMAL NULL,
-  `fk_restevravije` INT NOT NULL,
-  `fk_Tip_hrane` INT NOT NULL,
-  PRIMARY KEY (`Id_hrane`),
-  INDEX `fk_Hrana_Restevracija1_idx` (`fk_restevravije` ASC) VISIBLE,
-  INDEX `fk_Hrana_Tip_hrane1_idx` (`fk_Tip_hrane` ASC) VISIBLE,
-  CONSTRAINT `fk_Hrana_Restevracija1`
-    FOREIGN KEY (`fk_restevravije`)
-    REFERENCES `spv`.`Restevracija` (`id_restevravije`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  CONSTRAINT `fk_Hrana_Tip_hrane1`
-    FOREIGN KEY (`fk_Tip_hrane`)
-    REFERENCES `spv`.`Tip_hrane` (`id_Tip_hrane`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
+  `Cena` DECIMAL(5,2) NULL,
+  `TipHrane` VARCHAR(45) NULL,
+  `OpisHrane` VARCHAR(100) NULL,
+  PRIMARY KEY (`Id_hrane`))
 ENGINE = InnoDB;
 
 
@@ -127,6 +107,29 @@ CREATE TABLE IF NOT EXISTS `spv`.`Hrana_Vsebuje_Alergen` (
   CONSTRAINT `fk_Hrana_vsebuje_Alergen_Alergen1`
     FOREIGN KEY (`fk_Alergen`)
     REFERENCES `spv`.`Alergen` (`idAlergen`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `spv`.`Ponuja`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `spv`.`Ponuja` (
+  `IdVsebuje` INT NOT NULL AUTO_INCREMENT,
+  `FK_id_restevravije` INT NOT NULL,
+  `FK_Id_hrane` INT NOT NULL,
+  INDEX `fk_Restevracija_has_Hrana_Hrana1_idx` (`FK_Id_hrane` ASC) VISIBLE,
+  INDEX `fk_Restevracija_has_Hrana_Restevracija1_idx` (`FK_id_restevravije` ASC) VISIBLE,
+  PRIMARY KEY (`IdVsebuje`),
+  CONSTRAINT `fk_Restevracija_has_Hrana_Restevracija1`
+    FOREIGN KEY (`FK_id_restevravije`)
+    REFERENCES `spv`.`Restevracija` (`id_restevravije`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_Restevracija_has_Hrana_Hrana1`
+    FOREIGN KEY (`FK_Id_hrane`)
+    REFERENCES `spv`.`Hrana` (`Id_hrane`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;

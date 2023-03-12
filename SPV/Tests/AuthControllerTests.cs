@@ -5,74 +5,131 @@ using SPV.Controllers;
 using SPV.Models;
 using SPV.Utils;
 using System;
+using System.Linq;
 
-namespace SPV.Tests.Controllers
+[TestClass]
+public class AuthControllerTests
 {
-    [TestClass]
-    public class AuthControllerTests
+    private readonly AppDbContext db;
+    private readonly AuthController authController;
+    PasswordManagement passwordManagement = new PasswordManagement();
+
+    public AuthControllerTests()
     {
-        private readonly AppDbContext _context;
-        private readonly AuthController authController;
-        PasswordManagement passwordManagement = new PasswordManagement();
+        var fixture = new InMemoryDatabaseFixture();
+        db = fixture.Context;
+        authController = new AuthController(db);
+    }
+    [TestInitialize]
+    public void Initialize()
+    {
+    }
 
-        public AuthControllerTests()
+    [TestMethod]
+    public void VeljavnaPrijava()
+    {
+        User user = new User
         {
-            var fixture = new InMemoryDatabaseFixture();
-            _context = fixture.Context;
-            authController = new AuthController(_context);
-        }
-        [TestInitialize]
-        public void Initialize()
+            Username = "johndoe",
+            Surname = "Doe",
+            Name = "John",
+            Email = "johndoe@example.com",
+            Password = "password123",
+            Created = DateTime.Now
+        };
+        passwordManagement.HashPasword(user);
+
+        db.User.Add(user);
+        db.SaveChanges();
+
+        Session result = authController.Login(user);
+
+        Assert.IsNotNull(result);
+        Assert.AreEqual("", result.Error);
+        Assert.AreEqual(user.Id, result.UserID);
+        Assert.IsTrue(result.DateTo > DateTime.Now);
+    }
+
+    [TestMethod]
+    public void NapačnoGeslo()
+    {
+        User user = new User
         {
-        }
+            Username = "johndoe",
+            Surname = "Doe",
+            Name = "John",
+            Email = "johndoe@example.com",
+            Password = "password123",
+            Created = DateTime.Now
+        };
+        db.User.Add(user);
+        db.SaveChanges();
 
-        [TestMethod]
-        public void Login_WithValidCredentials_ReturnsSession()
+        User invalidUser = new User
         {
-            User user = new User { Email = "test@example.com", Password = "password123" };
-            _context.User.Add(user);
-         
-            Session session = authController.Login(user);
+            Username = "johndoe",
+            Surname = "Doe",
+            Name = "John",
+            Email = "johndoe@example.com",
+            Password = "blablabla",
+            Created = DateTime.Now
+        };
 
-            Assert.IsNotNull(session);
-            Assert.AreEqual(session.UserID, 0);
-        }
+        Session result = authController.Login(invalidUser);
 
-        [TestMethod]
-        public void Login_WithInvalidUser_ReturnsError()
+        Assert.IsNotNull(result);
+        Assert.AreEqual("Wrong password", result.Error);
+    }
+
+    [TestMethod]
+    public void VeljavnaRegistracija()
+    {
+        User user = new User
         {
-            User user = new User { Email = "invalid@example.com", Password = "password123" };
+            Username = "tester",
+            Surname = "tester",
+            Name = "tester",
+            Email = "tester@example.com",
+            Password = "tester123",
+            Created = DateTime.Now
+        };
 
-            _context.User.Add(user);
-            Session session = authController.Login(user);
+        Session result = authController.Register(user);
 
-            Assert.IsNotNull(session);
-            Assert.AreEqual(session.Error, "Wrong body parameters");
-        }
+        Assert.IsNotNull(result);
+        Assert.AreEqual("", result.Error);
+        Assert.AreEqual(user.Username, db.User.Find(result.UserID).Username);
+        Assert.IsTrue(result.DateTo > DateTime.Now);
+    }
 
-        [TestMethod]
-        public void Register_WithNewUser_ReturnsSession()
+    [TestMethod]
+    public void RegistracijObstoječiUporabnik()
+    {
+        User user = new User
         {
-            _context.User.Add(new User { Email = "test@example.com", Password = "password123" });
+            Username = "johndoe",
+            Surname = "Doe",
+            Name = "John",
+            Email = "johndoe@example.com",
+            Password = "password123",
+            Created = DateTime.Now
+        };
+        db.User.Add(user);
+        db.SaveChanges();
 
-            User user = new User { Email = "newuser@example.com", Password = "password123",Username="MyUsername", Name="MyName", Surname="Surname", Created=DateTime.Now };
-
-            passwordManagement.HashPasword(user);
-            Session session = authController.Register(user);
-
-            Assert.IsNotNull(session);
-            Assert.IsNotNull(session.UserID);
-        }
-
-        [TestMethod]
-        public void Register_WithExistingUser_ReturnsError()
+        User existingUser = new User
         {
-            User user = new User { Email = "test@example.com", Password = "password123" };
+            Username = "johndoe",
+            Surname = "Doe",
+            Name = "John",
+            Email = "johndoe@example.com",
+            Password = "password123",
+            Created = DateTime.Now
+        };
 
-            Session session = authController.Register(user);
+        Session result = authController.Register(existingUser);
 
-            Assert.IsNotNull(session);
-            Assert.AreEqual(session.Error, "User already exists");
-        }
+        Assert.IsNotNull(result);
+        Assert.AreEqual("User already exists", result.Error);
     }
 }

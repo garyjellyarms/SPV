@@ -71,7 +71,7 @@ namespace SPV.Controllers
             return true;
         }
 
-        [HttpPut("{id}")]
+        [HttpPut("Ocena/{id}")]
         public bool PutOcena(int id, [FromBody] Restaurant changeRestaurant)
         {
             if (id != changeRestaurant.Id) return false;

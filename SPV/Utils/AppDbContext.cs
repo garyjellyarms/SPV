@@ -15,5 +15,6 @@ namespace SPV.Utils
         public DbSet<Restaurant> Restaurants { get; set; }
         public DbSet<Food> Foods { get; set; }
         public DbSet<Alergen> Alergens { get; set; }
+        public DbSet<Group> Groups { get; set; }
     }
 }

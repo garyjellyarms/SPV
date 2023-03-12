@@ -11,7 +11,7 @@ namespace SPV.Controllers
     public class ResturantController : ControllerBase
     {
         private readonly AppDbContext db;
-
+        IzracunNoveOcene izracunNoveOcene = new IzracunNoveOcene();
         public ResturantController(AppDbContext db)
         {
             this.db = db;
@@ -64,6 +64,32 @@ namespace SPV.Controllers
             oldRestaurant.X_coordinate = changeRestaurant.X_coordinate;
             oldRestaurant.Y_coordinate = changeRestaurant.Y_coordinate;
             oldRestaurant.OpeningTime = changeRestaurant.OpeningTime;
+            oldRestaurant.ClosingTime = changeRestaurant.ClosingTime;
+            oldRestaurant.FoodList = changeRestaurant.FoodList;
+            db.SaveChanges();
+
+            return true;
+        }
+
+        [HttpPut("{id}")]
+        public bool PutOcena(int id, [FromBody] Restaurant changeRestaurant)
+        {
+            if (id != changeRestaurant.Id) return false;
+
+            Restaurant? oldRestaurant = db.Restaurants.FirstOrDefault(x => x.Id == id);
+
+            if (oldRestaurant == null) return false;
+
+
+            //treba izracunat novo oceno
+            int novaOcena = (oldRestaurant.Ocena + changeRestaurant.Ocena) / 2;
+
+
+            oldRestaurant.Name = changeRestaurant.Name;
+            oldRestaurant.X_coordinate = changeRestaurant.X_coordinate;
+            oldRestaurant.Y_coordinate = changeRestaurant.Y_coordinate;
+            oldRestaurant.OpeningTime = changeRestaurant.OpeningTime;
+            oldRestaurant.Ocena = novaOcena;
             oldRestaurant.ClosingTime = changeRestaurant.ClosingTime;
             oldRestaurant.FoodList = changeRestaurant.FoodList;
             db.SaveChanges();

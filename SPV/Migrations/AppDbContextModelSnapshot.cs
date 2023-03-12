@@ -30,7 +30,14 @@ namespace SPV.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int?>("GroupId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("OpisHrane")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -40,7 +47,28 @@ namespace SPV.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("GroupId");
+
                     b.ToTable("Foods");
+                });
+
+            modelBuilder.Entity("SPV.Models.Group", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("Created")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("Guid")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Groups");
                 });
 
             modelBuilder.Entity("SPV.Models.Restaurant", b =>
@@ -113,6 +141,9 @@ namespace SPV.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("GroupId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -134,7 +165,42 @@ namespace SPV.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("GroupId");
+
                     b.ToTable("User");
+                });
+
+            modelBuilder.Entity("SPV.Models.Alergen", b =>
+                {
+                    b.HasOne("SPV.Models.Food", null)
+                        .WithMany("Alergens")
+                        .HasForeignKey("FoodId");
+                });
+
+            modelBuilder.Entity("SPV.Models.Food", b =>
+                {
+                    b.HasOne("SPV.Models.Group", null)
+                        .WithMany("Foods")
+                        .HasForeignKey("GroupId");
+                });
+
+            modelBuilder.Entity("SPV.Models.User", b =>
+                {
+                    b.HasOne("SPV.Models.Group", null)
+                        .WithMany("Users")
+                        .HasForeignKey("GroupId");
+                });
+
+            modelBuilder.Entity("SPV.Models.Food", b =>
+                {
+                    b.Navigation("Alergens");
+                });
+
+            modelBuilder.Entity("SPV.Models.Group", b =>
+                {
+                    b.Navigation("Foods");
+
+                    b.Navigation("Users");
                 });
 #pragma warning restore 612, 618
         }

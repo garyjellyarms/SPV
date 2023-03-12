@@ -33,7 +33,32 @@ namespace SPV.Controllers
         {
         }
 
-        // DELETE api/<FoodController>/5
+        [HttpPut("Ocena/{id}")]
+        public bool PutOcena(int id, [FromBody] Restaurant changeRestaurant)
+        {
+            if (id != changeRestaurant.Id) return false;
+
+            Restaurant? oldRestaurant = db.Restaurants.FirstOrDefault(x => x.Id == id);
+
+            if (oldRestaurant == null) return false;
+
+
+            //treba izracunat novo oceno
+            int novaOcena = (oldRestaurant.Ocena + changeRestaurant.Ocena) / 2;
+
+
+            oldRestaurant.Name = changeRestaurant.Name;
+            oldRestaurant.X_coordinate = changeRestaurant.X_coordinate;
+            oldRestaurant.Y_coordinate = changeRestaurant.Y_coordinate;
+            oldRestaurant.OpeningTime = changeRestaurant.OpeningTime;
+            oldRestaurant.Ocena = novaOcena;
+            oldRestaurant.ClosingTime = changeRestaurant.ClosingTime;
+            oldRestaurant.FoodList = changeRestaurant.FoodList;
+            db.SaveChanges();
+
+            return true;
+        }
+
         [HttpDelete("{id}")]
         public void Delete(int id)
         {

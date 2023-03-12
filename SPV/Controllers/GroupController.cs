@@ -10,99 +10,80 @@ namespace SPV.Controllers
     public class GroupController : ControllerBase
     {
         private readonly AppDbContext db;
-        public Group Group;
 
         public GroupController(AppDbContext db)
         {
             this.db = db;
-
-            Group = new Group();
-
         }
 
         // GET: api/<GroupController>
         [HttpGet]
-        
-        public async Task<ActionResult<List<Group>>> Get()
+        public IEnumerable<Group> Get()
         {
-            var groupList = Group.Groups;
+            var groups = db.Groups.ToList();
 
+            if (groups == null || groups.Count < 1) return null;
 
-            if (groupList != null)
-            {
-                return Ok(groupList);
-            }
-            else
-                return BadRequest();
-
+            return groups;
         }
 
-
-        // GET api/<GroupController>/1
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Group>> Get(Guid guid)
+        // GET api/<GroupController>/5
+        [HttpGet("{guid}")]
+        public Group Get(Guid guid)
         {
-            var group = Group.Groups.Where(g => g.Guid == guid).FirstOrDefault();
+            Group group = db.Groups.FirstOrDefault(g => g.Guid == guid);
 
-            if (group != null)
-            {
-                return Ok(group);
-            }
-            else
-                return BadRequest();
+            if (group == null) return null;
 
+            return group;
         }
 
         // POST api/<GroupController>
         [HttpPost]
-        public async Task<ActionResult<List<Group>>> Post([FromBody] Group newGroup)
+        public Group Post([FromBody] Group newGroup)
         {
-            if(newGroup == null)
-            {
-                return BadRequest();
-            }
-            else
-                Group.Groups.Add(newGroup);
-                Group.CreateNewGroup();
-            return Ok();
+            if (newGroup == null) return null;
 
+            var group = db.Groups.Add(newGroup);
+            db.SaveChanges();
 
+            return group.Entity;
         }
 
-
-
-        [HttpPut]
-        public async Task<ActionResult<List<Group>>> Put([FromBody] Group newGroup)
+        // PUT api/<GroupController>/5
+        [HttpPut("{guid}")]
+        public bool Put(Guid guid, [FromBody] Group changeGroup)
         {
+            if (guid != changeGroup.Guid) return false;
 
-            var groupToUpdate = Group.Groups.Where(g => g.Guid == newGroup.Guid).FirstOrDefault();
+            Group oldGroup = db.Groups.FirstOrDefault(x => x.Guid == guid);
 
-            if (groupToUpdate == null)
-            {
-                return BadRequest();
-            }
-            else
+            if (oldGroup == null) return false;
 
-                return Ok(groupToUpdate);
+            oldGroup.Created = changeGroup.Created;
+            oldGroup.Users = changeGroup.Users.ToList();
+            oldGroup.Foods = changeGroup.Foods.ToList();
+            oldGroup.FoodRating = changeGroup.FoodRating;
+            db.SaveChanges();
 
+            return true;
         }
 
-        [HttpDelete("{id}")]
-        public async Task<ActionResult<List<Delegate>>> Delete(Guid guid)
+        // DELETE api/<GroupController>/5
+        [HttpDelete("{guid}")]
+        public Group Delete(Guid guid)
         {
-            var groupToDelete = Group.Groups.Where(g => g.Guid == guid).FirstOrDefault();
+            if (guid == null) return null;
 
-            if (groupToDelete != null)
-            {
-                Group.Groups.Remove(groupToDelete);
-                return Ok(groupToDelete);
-            }
-            else
-                return BadRequest();
+            Group deletingGroup = db.Groups.FirstOrDefault(x => x.Guid == guid);
 
+            if (deletingGroup == null) return null;
+
+            var deleted = db.Groups.Remove(deletingGroup);
+            db.SaveChanges();
+
+            return deleted.Entity;
         }
-
-
-
     }
+
 }

@@ -1,7 +1,12 @@
-﻿namespace SPV.Models
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
+
+namespace SPV.Models
 {
     public class Group
     {
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid Guid { get; set; }
         public DateTime Created { get; set; }
 

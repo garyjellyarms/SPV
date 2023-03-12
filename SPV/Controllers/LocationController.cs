@@ -17,6 +17,7 @@ namespace SPV.Controllers
         [Route("api/[controller]/Distance")]
         public double DistanceToRestaurant(double latitudeUser, double longitudeUser, double latitudeRest, double longitudeRest, string UnitofMessurement)
         {
+            //preveri katere merske enote uporablja uporabnik
             UnitOfLength unit;
             switch (UnitofMessurement)
             {
@@ -43,6 +44,7 @@ namespace SPV.Controllers
                     break;
             }
 
+            //izračuna razred Coordinates ki ima funkcijo distance to katera izračuna zračno razdaljo od uporabnika do restarvracije
             var distance = new Coordinates(latitudeUser, longitudeUser).DistanceTo(new Coordinates(latitudeRest, longitudeRest),unit);
 
             return distance;

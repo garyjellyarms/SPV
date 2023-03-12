@@ -11,10 +11,11 @@ namespace SPV.Controllers
     public class ResturantController : ControllerBase
     {
         private readonly AppDbContext db;
-        IzracunNoveOcene izracunNoveOcene = new IzracunNoveOcene();
+        private readonly IzracunNoveOcene izracunNoveOcene;
         public ResturantController(AppDbContext db)
         {
             this.db = db;
+            izracunNoveOcene = new IzracunNoveOcene();
         }
 
         // GET: api/<ResturantController>

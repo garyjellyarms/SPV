@@ -69,5 +69,34 @@ namespace SPV.Controllers
 
         }
 
+        [HttpPut]
+        [Route("api/[controller]/passwordReset/{newPassword}")]
+        public bool PasswordReset(string newPassword,[FromBody] User user)
+        {
+            User? existingUser = db.User.FirstOrDefault(x => x.Id == user.Id);
+            
+            if(existingUser == null) return false;
+
+            existingUser.Password = newPassword;
+            passwordManagement.HashPasword(user);
+            db.SaveChanges();
+
+            return true;
+        }
+
+        [HttpPut]
+        [Route("api/[controller]/emailReset/{newEmail}")]
+        public bool EmailReset(string newEmail, [FromBody] User user)
+        {
+            User? existingUser = db.User.FirstOrDefault(x => x.Id == user.Id);
+
+            if (existingUser == null) return false;
+
+            existingUser.Email = newEmail;
+            db.SaveChanges();
+
+            return true;
+        }
+
     }
 }
